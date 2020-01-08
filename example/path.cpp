@@ -8,7 +8,7 @@ int main() {
     auto vars = cube.solve();
 
     for (size_t target = 1; target < vars.size(); target++) {
-        auto &action = vars.path[target];
+        auto &action = vars.path.get(target);
         std::cout << action.from_idx << " * " << action.gen << " = " << target << std::endl;
     }
 

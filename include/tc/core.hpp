@@ -16,10 +16,26 @@ namespace tc {
         Action(int from_idx, int gen);
     };
 
+    struct Path {
+        std::vector<Action> path;
+
+        Path() = default;
+
+        Path(const Path &) = default;
+
+        void add_row();
+
+        [[nodiscard]] const Action get(int to_idx) const;
+
+        void put(int from_idx, int gen, int to_idx);
+
+        [[nodiscard]] size_t size() const;
+    };
+
     struct Cosets {
         int ngens;
         std::vector<int> data;
-        std::vector<Action> path;
+        Path path;
 
         Cosets(const Cosets &) = default;
 

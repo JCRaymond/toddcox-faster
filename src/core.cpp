@@ -8,21 +8,37 @@ namespace tc {
         : from_idx(from_idx), gen(gen) {
     }
 
+    void Path::add_row() {
+        path.resize(path.size() + 1);
+    }
+
+    const Action Path::get(int to_idx) const {
+        return path[to_idx];
+    }
+
+    void Path::put(int from_idx, int gen, int to_idx) {
+        path[to_idx] = Action(from_idx, gen);
+    }
+
+    size_t Path::size() const {
+        return path.size();
+    }
+
     Cosets::Cosets(int ngens)
         : ngens(ngens) {
     }
 
     void Cosets::add_row() {
         data.resize(data.size() + ngens, -1);
-        path.resize(path.size() + 1);
+        path.add_row();
     }
 
     void Cosets::put(int coset, int gen, int target) {
         data[coset * ngens + gen] = target;
         data[target * ngens + gen] = coset;
 
-        if (path[target].from_idx == -1) {
-            path[target] = Action(coset, gen);
+        if (path.get(target).from_idx == -1) {
+            path.put(coset, gen, target);
         }
     }
 
@@ -32,8 +48,8 @@ namespace tc {
         data[idx] = target;
         data[target * ngens + gen] = coset;
 
-        if (path[target].from_idx == -1) {
-            path[target] = Action(coset, gen);
+        if (path.get(target).from_idx == -1) {
+            path.put(coset, gen, target);
         }
     }
 
