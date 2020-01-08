@@ -9,7 +9,7 @@ int main() {
 
     for (size_t target = 1; target < vars.size(); target++) {
         auto &action = vars.path[target];
-        std::cout << action.coset << " * " << action.gen << " = " << target << std::endl;
+        std::cout << action.from_idx << " * " << action.gen << " = " << target << std::endl;
     }
 
     return 0;

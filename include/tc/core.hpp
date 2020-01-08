@@ -6,15 +6,14 @@
 
 namespace tc {
     struct Action {
-        int coset = -1;
+        int from_idx = -1;
         int gen = -1;
-        int target = -1;
 
         Action() = default;
 
         Action(const Action &) = default;
 
-        Action(int coset, int gen, int target);
+        Action(int from_idx, int gen);
     };
 
     struct Cosets {
@@ -52,6 +51,8 @@ namespace tc {
         [[nodiscard]] Rel shift(int off) const;
     };
 
+    struct SubGroup;
+
     struct Group {
         const int ngens;
         std::vector<std::vector<int>> _mults;
@@ -67,11 +68,20 @@ namespace tc {
 
         [[nodiscard]] std::vector<Rel> rels() const;
 
+        [[nodiscard]] SubGroup subgroup(const std::vector<int> &gens) const;
+
         [[nodiscard]] Group product(const Group &other) const;
 
         [[nodiscard]] Group power(int p) const;
 
-        [[nodiscard]] Cosets solve(const std::vector<int>& sub_gens = {}) const;
+        [[nodiscard]] Cosets solve(const std::vector<int> &sub_gens = {}) const;
+    };
+
+    struct SubGroup : public Group {
+        const std::vector<int> gen_map;
+        const Group &parent;
+
+        SubGroup(const Group &parent, const std::vector<int> &gen_map);
     };
 
     Group operator*(const Group &g, const Group &h);

@@ -4,8 +4,8 @@
 #include <sstream>
 
 namespace tc {
-    Action::Action(int coset, int gen, int target)
-        : coset(coset), gen(gen), target(target) {
+    Action::Action(int from_idx, int gen)
+        : from_idx(from_idx), gen(gen) {
     }
 
     Cosets::Cosets(int ngens)
@@ -21,8 +21,8 @@ namespace tc {
         data[coset * ngens + gen] = target;
         data[target * ngens + gen] = coset;
 
-        if (path[target].coset == -1) {
-            path[target] = Action(coset, gen, target);
+        if (path[target].from_idx == -1) {
+            path[target] = Action(coset, gen);
         }
     }
 
@@ -32,8 +32,8 @@ namespace tc {
         data[idx] = target;
         data[target * ngens + gen] = coset;
 
-        if (path[target].coset == -1) {
-            path[target] = Action(coset, gen, target);
+        if (path[target].from_idx == -1) {
+            path[target] = Action(coset, gen);
         }
     }
 
@@ -89,6 +89,10 @@ namespace tc {
         return res;
     }
 
+    SubGroup Group::subgroup(const std::vector<int> &gens) const {
+        return SubGroup(*this, gens);
+    }
+
     Group Group::product(const Group &other) const {
         std::stringstream ss;
         ss << name << "*" << other.name;
@@ -114,5 +118,16 @@ namespace tc {
         }
 
         return g;
+    }
+
+    SubGroup::SubGroup(const Group &parent, const std::vector<int> &gen_map)
+        : Group(gen_map.size()), parent(parent), gen_map(gen_map) {
+
+        for (size_t i = 0; i < gen_map.size(); ++i) {
+            for (size_t j = 0; j < gen_map.size(); ++j) {
+                int mult = parent.get(gen_map[i], gen_map[j]);
+                set(Rel(i, j, mult));
+            }
+        }
     }
 }

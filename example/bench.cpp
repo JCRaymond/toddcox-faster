@@ -17,7 +17,7 @@ int main() {
         tc::group::E(7),
         tc::group::B(6),
         tc::group::B(7),
-        tc::group::B(8),
+        tc::group::B(8)
     };
 
     for (const auto &group : groups) {
