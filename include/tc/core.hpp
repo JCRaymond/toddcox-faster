@@ -33,16 +33,16 @@ namespace tc {
         template<class T>
         [[nodiscard]] std::vector<T> walk(
             T start,
-            std::vector<T> gen_values,
-            std::function<T(const T&, const T&)> op
+            std::vector<T> gens,
+            std::function<T(const T &, const T &)> op
         ) const {
             std::vector<T> res(size());
             res[0] = start;
 
             for (int i = 1; i < res.size(); ++i) {
-                auto action = path[i];
-                const auto &from = res[action.from_idx];
-                const auto &val = gen_values[action.gen];
+                auto &action = path[i];
+                auto &from = res[action.from_idx];
+                auto &val = gens[action.gen];
                 res[i] = op(from, val);
             }
 
