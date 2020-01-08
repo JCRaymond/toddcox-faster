@@ -1,8 +1,9 @@
 #pragma once
 
-#include<array>
-#include<vector>
-#include<string>
+#include <array>
+#include <functional>
+#include <vector>
+#include <string>
 
 namespace tc {
     struct Action {
@@ -25,9 +26,29 @@ namespace tc {
 
         void add_row();
 
-        [[nodiscard]] const Action get(int to_idx) const;
+        [[nodiscard]] Action get(int to_idx) const;
 
         void put(int from_idx, int gen, int to_idx);
+
+        template<class T>
+        [[nodiscard]] std::vector<T> walk(
+            T start,
+            std::vector<T> gen_values,
+            std::function<T(const T&, const T&)> op
+        ) const {
+            std::vector<T> res(size());
+            res[0] = start;
+
+            for (int i = 1; i < res.size(); ++i) {
+                auto action = path[i];
+                const auto &from = res[action.from_idx];
+                const auto &val = gen_values[action.gen];
+                res[i] = op(from, val);
+            }
+
+            return res;
+        }
+
 
         [[nodiscard]] size_t size() const;
     };

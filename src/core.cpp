@@ -12,7 +12,7 @@ namespace tc {
         path.resize(path.size() + 1);
     }
 
-    const Action Path::get(int to_idx) const {
+    Action Path::get(int to_idx) const {
         return path[to_idx];
     }
 
