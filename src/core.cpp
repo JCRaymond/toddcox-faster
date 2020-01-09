@@ -2,6 +2,7 @@
 
 #include <utility>
 #include <sstream>
+#include <algorithm>
 
 namespace tc {
     Action::Action(int from_idx, int gen)
@@ -148,5 +149,13 @@ namespace tc {
                 set(Rel(i, j, mult));
             }
         }
+    }
+
+    Group operator*(const Group &g, const Group &h) {
+        return g.product(h);
+    }
+
+    Group operator^(const Group &g, int p) {
+        return g.power(p);
     }
 }
