@@ -136,8 +136,11 @@ namespace tc {
         return g;
     }
 
-    SubGroup::SubGroup(const Group &parent, const std::vector<int> &gen_map)
-        : Group(gen_map.size()), parent(parent), gen_map(gen_map) {
+    SubGroup::SubGroup(const Group &parent, std::vector<int> gen_map)
+        : Group(gen_map.size()), parent(parent) {
+
+        std::sort(gen_map.begin(), gen_map.end());
+        this->gen_map = gen_map;
 
         for (size_t i = 0; i < gen_map.size(); ++i) {
             for (size_t j = 0; j < gen_map.size(); ++j) {

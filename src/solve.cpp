@@ -67,6 +67,11 @@ namespace tc {
     Cosets Group::solve(const std::vector<int> &sub_gens) const {
         Cosets cosets(ngens);
         cosets.add_row();
+
+        if (ngens == 0) {
+            return cosets;
+        }
+
         for (int g : sub_gens) {
             cosets.put(g, 0);
         }

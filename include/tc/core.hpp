@@ -115,10 +115,10 @@ namespace tc {
     };
 
     struct SubGroup : public Group {
-        const std::vector<int> gen_map;
+        std::vector<int> gen_map;
         const Group &parent;
 
-        SubGroup(const Group &parent, const std::vector<int> &gen_map);
+        SubGroup(const Group &parent, std::vector<int> gen_map);
     };
 
     Group operator*(const Group &g, const Group &h);
