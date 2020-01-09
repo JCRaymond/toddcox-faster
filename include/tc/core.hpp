@@ -30,11 +30,11 @@ namespace tc {
 
         void put(int from_idx, int gen, int to_idx);
 
-        template<class T>
+        template<class T, class E>
         [[nodiscard]] std::vector<T> walk(
             T start,
-            std::vector<T> gens,
-            std::function<T(const T &, const T &)> op
+            std::vector<E> gens,
+            std::function<T(const T &, const E &)> op
         ) const {
             std::vector<T> res(size());
             res[0] = start;
