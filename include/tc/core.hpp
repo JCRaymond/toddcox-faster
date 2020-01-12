@@ -49,6 +49,23 @@ namespace tc {
             return res;
         }
 
+        template<class T>
+        [[nodiscard]] std::vector<T> walk(
+            T start,
+            std::function<T(const T &, const int &)> op
+        ) const {
+            std::vector<T> res(size());
+            res[0] = start;
+
+            for (int i = 1; i < res.size(); ++i) {
+                auto &action = path[i];
+                auto &from = res[action.from_idx];
+                auto &val = action.gen;
+                res[i] = op(from, val);
+            }
+
+            return res;
+        }
 
         [[nodiscard]] size_t size() const;
     };
