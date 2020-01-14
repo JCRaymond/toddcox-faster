@@ -73,7 +73,8 @@ namespace tc {
         }
 
         for (int g : sub_gens) {
-            cosets.put(g, 0);
+            if (g < ngens)
+                cosets.put(0, g, 0);
         }
 
         RelTables rel_tables(rels());
@@ -135,6 +136,11 @@ namespace tc {
 
                 coset = fact_idx / ngens;
                 gen = fact_idx % ngens;
+
+                if (target == coset)
+                    for (int table_idx : gen_map[gen])
+                        if (target_row.lst_ptrs[table_idx] == nullptr)
+                            target_row.gnrs[table_idx] = -1;
 
                 RelTablesRow &coset_row = *(rel_tables.rows[coset]);
                 for (int table_idx : gen_map[gen]) {
