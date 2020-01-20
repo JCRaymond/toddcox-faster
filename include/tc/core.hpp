@@ -29,6 +29,25 @@ namespace tc {
         [[nodiscard]] Action get(int to_idx) const;
 
         void put(int from_idx, int gen, int to_idx);
+      
+        template<class C, class T, class E>
+        void walk(
+            C& res,
+            T start,
+            std::vector<E> gens,
+            std::function<T(const T &, const E &)> op
+        ) const {
+            size_t s = size();
+            res.reserve(s);
+            res.push_back(start);
+
+            for (int i = 1; i < s; ++i) {
+                auto &action = path[i];
+                auto &from = res.get(action.from_idx);
+                auto &val = gens[action.gen];
+                res.push_back(op(from,val));
+            }
+        }
 
         template<class T, class E>
         [[nodiscard]] std::vector<T> walk(
