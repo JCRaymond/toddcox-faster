@@ -32,65 +32,31 @@ namespace tc {
         [[nodiscard]] Action get(Gen to_idx) const;
 
         void put(Gen from_idx, Gen gen, Gen to_idx);
-      
-        template<class C, class T, class E>
-        void walk(
-            C& res,
-            T start,
-            std::vector<E> gens,
-            std::function<T(const T &, const E &)> op
-        ) const {
-            size_t s = size();
-            res.reserve(s);
-            res.push_back(start);
-
-            for (Gen i = 1; i < s; ++i) {
-                auto &action = path[i];
-                auto &from = res.get(action.from_idx);
-                auto &val = gens[action.gen];
-                res.push_back(op(from,val));
-            }
-        }
-
-        template<class T, class E>
-        [[nodiscard]] std::vector<T> walk(
-            T start,
-            std::vector<E> gens,
-            std::function<T(const T &, const E &)> op
-        ) const {
-            std::vector<T> res(size());
-            res[0] = start;
-
-            for (Gen i = 1; i < res.size(); ++i) {
-                auto &action = path[i];
-                auto &from = res[action.from_idx];
-                auto &val = gens[action.gen];
-                res[i] = op(from, val);
-            }
-
-            return res;
-        }
-
-        template<class T>
-        [[nodiscard]] std::vector<T> walk(
-            T start,
-            std::function<T(const T &, const Gen &)> op
-        ) const {
-            std::vector<T> res(size());
-            res[0] = start;
-
-            for (Gen i = 1; i < res.size(); ++i) {
-                auto &action = path[i];
-                auto &from = res[action.from_idx];
-                auto &val = action.gen;
-                res[i] = op(from, val);
-            }
-
-            return res;
-        }
 
         [[nodiscard]] size_t size() const;
     };
+
+    template<class T, class F>
+    std::vector<T> walk(const Path &path, T start, F op) {
+        std::vector<T> res(path.size());
+        res[0] = start;
+
+        for(size_t i = 1; i < res.size(); ++i) {
+            auto &action = path.path[i];
+            auto &from = res[action.from_idx];
+            auto &val = action.gen;
+            res[i] = op(from, val);
+        }
+
+        return res;
+    }
+
+    template<class T, class E, class F>
+    std::vector<T> walk(const Path &path, T start, E gens, F op) {
+        return tc::walk(path, start, [&](T from, Gen gen){
+            return op(from, gens[gen]);
+        });
+    }
 
     struct Cosets {
         Gen ngens;
