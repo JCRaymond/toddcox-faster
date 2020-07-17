@@ -8,34 +8,34 @@ namespace tc {
      * Construct a group from a (simplified) Schlafli Symbol of the form [a, b, ..., c]
      * @param mults: The sequence of multiplicites between adjacent generators.
      */
-    Group schlafli(const std::vector<int> &mults, const std::string &name);
+    Group schlafli(const std::vector<size_t> &mults, const std::string &name);
 
     /**
      * Construct a group from a (simplified) Schlafli Symbol of the form [a, b, ..., c]
      * @param mults: The sequence of multiplicites between adjacent generators.
      */
-    Group schlafli(const std::vector<int> &mults);
+    Group schlafli(const std::vector<size_t> &mults);
 
     namespace group {
         /**
          * Simplex
          */
-        Group A(int dim);
+        Group A(size_t dim);
 
         /**
          * Cube, Orthoplex
          */
-        Group B(int dim);
+        Group B(size_t dim);
 
         /**
          * Demicube, Orthoplex
          */
-        Group D(int dim);
+        Group D(size_t dim);
 
         /**
          * E groups
          */
-        Group E(int dim);
+        Group E(size_t dim);
 
         /**
          * 24 Cell
@@ -50,21 +50,21 @@ namespace tc {
         /**
          * Icosahedron
          */
-        Group H(int dim);
+        Group H(size_t dim);
 
         /**
          * Polygonal
          */
-        Group I2(int n);
+        Group I2(size_t n);
 
         /**
          * Toroidal. I2(n) * I2(m)
          */
-        Group T(int n, int m);
+        Group T(size_t n, size_t m);
 
         /**
          * Toroidal. T(n, n)
          */
-        Group T(int n);
+        Group T(Gen n);
     }
 }

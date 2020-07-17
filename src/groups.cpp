@@ -3,19 +3,19 @@
 #include <sstream>
 
 namespace tc {
-    Group schlafli(const std::vector<int> &mults, const std::string &name) {
-        int ngens = (int) mults.size() + 1;
+    Group schlafli(const std::vector<size_t> &mults, const std::string &name) {
+        size_t ngens = (size_t) mults.size() + 1;
 
         Group g(ngens, {}, name);
 
-        for (int i = 0; i < (int) mults.size(); i++) {
+        for (size_t i = 0; i < (size_t) mults.size(); i++) {
             g.set(Rel(i, i + 1, mults[i]));
         }
 
         return g;
     }
 
-    Group schlafli(const std::vector<int> &mults) {
+    Group schlafli(const std::vector<size_t> &mults) {
         std::stringstream ss;
         ss << "[";
         if (!mults.empty()) {
@@ -30,33 +30,33 @@ namespace tc {
     }
 
     namespace group {
-        Group A(const int dim) {
+        Group A(const size_t dim) {
             std::stringstream ss;
             ss << "A(" << dim << ")";
 
             if (dim == 0)
                 return Group(0, {}, ss.str());
 
-            const std::vector<int> &mults = std::vector<int>(dim - 1, 3);
+            const std::vector<size_t> &mults = std::vector<size_t>(dim - 1, 3);
 
             return schlafli(mults, ss.str());
         }
 
-        Group B(const int dim) {
+        Group B(const size_t dim) {
             std::stringstream ss;
             ss << "B(" << dim << ")";
 
-            std::vector<int> mults(dim - 1, 3);
+            std::vector<size_t> mults(dim - 1, 3);
             mults[0] = 4;
 
             return schlafli(mults, ss.str());
         }
 
-        Group D(const int dim) {
+        Group D(const size_t dim) {
             std::stringstream ss;
             ss << "D(" << dim << ")";
 
-            std::vector<int> mults(dim - 1, 3);
+            std::vector<size_t> mults(dim - 1, 3);
             mults[dim - 2] = 2;
 
             Group g = schlafli(mults, ss.str());
@@ -65,11 +65,11 @@ namespace tc {
             return g;
         }
 
-        Group E(const int dim) {
+        Group E(const size_t dim) {
             std::stringstream ss;
             ss << "E(" << dim << ")";
 
-            std::vector<int> mults(dim - 1, 3);
+            std::vector<size_t> mults(dim - 1, 3);
             mults[dim - 2] = 2;
 
             Group g = schlafli(mults, ss.str());
@@ -86,31 +86,31 @@ namespace tc {
             return schlafli({6}, "G2");
         }
 
-        Group H(const int dim) {
+        Group H(const size_t dim) {
             std::stringstream ss;
             ss << "H(" << dim << ")";
 
-            std::vector<int> mults(dim - 1, 3);
+            std::vector<size_t> mults(dim - 1, 3);
             mults[0] = 5;
 
             return schlafli(mults, ss.str());
         }
 
-        Group I2(const int n) {
+        Group I2(const size_t n) {
             std::stringstream ss;
             ss << "I2(" << n << ")";
 
             return schlafli({n}, ss.str());
         }
 
-        Group T(const int n, const int m) {
+        Group T(const size_t n, const size_t m) {
             std::stringstream ss;
             ss << "T(" << n << "," << m << ")";
 
             return schlafli({n, 2, m}, ss.str());
         }
 
-        Group T(const int n) {
+        Group T(const size_t n) {
             std::stringstream ss;
             ss << "T(" << n << ")";
 

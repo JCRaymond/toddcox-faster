@@ -26,7 +26,7 @@ int main() {
         auto e = std::clock();
 
         double diff = (double) (e - s) / CLOCKS_PER_SEC;
-        int order = cosets.size();
+        size_t order = cosets.size();
 
         std::cout << group.name << "," << order << "," << diff << std::endl;
     }

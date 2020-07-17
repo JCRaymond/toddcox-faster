@@ -5,7 +5,7 @@
 #include <algorithm>
 
 namespace tc {
-    Action::Action(int from_idx, int gen)
+    Action::Action(Gen from_idx, Gen gen)
         : from_idx(from_idx), gen(gen) {
     }
 
@@ -13,11 +13,11 @@ namespace tc {
         path.resize(path.size() + 1);
     }
 
-    Action Path::get(int to_idx) const {
+    Action Path::get(Gen to_idx) const {
         return path[to_idx];
     }
 
-    void Path::put(int from_idx, int gen, int to_idx) {
+    void Path::put(Gen from_idx, Gen gen, Gen to_idx) {
         path[to_idx] = Action(from_idx, gen);
     }
 
@@ -25,7 +25,7 @@ namespace tc {
         return path.size();
     }
 
-    Cosets::Cosets(int ngens)
+    Cosets::Cosets(Gen ngens)
         : ngens(ngens) {
     }
 
@@ -34,7 +34,7 @@ namespace tc {
         path.add_row();
     }
 
-    void Cosets::put(int coset, int gen, int target) {
+    void Cosets::put(Gen coset, Gen gen, Gen target) {
         data[coset * ngens + gen] = target;
         data[target * ngens + gen] = coset;
 
@@ -43,9 +43,9 @@ namespace tc {
         }
     }
 
-    void Cosets::put(int idx, int target) {
-        int coset = idx / ngens;
-        int gen = idx % ngens;
+    void Cosets::put(Gen idx, Gen target) {
+        Gen coset = idx / ngens;
+        Gen gen = idx % ngens;
         data[idx] = target;
         data[target * ngens + gen] = coset;
 
@@ -54,11 +54,11 @@ namespace tc {
         }
     }
 
-    int Cosets::get(int coset, int gen) const {
+    Gen Cosets::get(Gen coset, Gen gen) const {
         return data[coset * ngens + gen];
     }
 
-    int Cosets::get(int idx) const {
+    Gen Cosets::get(Gen idx) const {
         return data[idx];
     }
 
@@ -66,15 +66,15 @@ namespace tc {
         return path.size();
     }
 
-    Rel::Rel(int a, int b, int m)
+    Rel::Rel(Gen a, Gen b, Gen m)
         : gens({a, b}), mult(m) {
     }
 
-    Rel Rel::shift(int off) const {
+    Rel Rel::shift(Gen off) const {
         return Rel(gens[0] + off, gens[1] + off, mult);
     }
 
-    Group::Group(int ngens, const std::vector<Rel> &rels, std::string name)
+    Group::Group(Gen ngens, const std::vector<Rel> &rels, std::string name)
         : ngens(ngens), name(std::move(name)) {
         _mults.resize(ngens);
 
@@ -92,21 +92,21 @@ namespace tc {
         _mults[r.gens[1]][r.gens[0]] = r.mult;
     }
 
-    int Group::get(int a, int b) const {
+    Gen Group::get(Gen a, Gen b) const {
         return _mults[a][b];
     }
 
     std::vector<Rel> Group::rels() const {
         std::vector<Rel> res;
-        for (int i = 0; i < ngens - 1; ++i) {
-            for (int j = i + 1; j < ngens; ++j) {
+        for (Gen i = 0; i < ngens - 1; ++i) {
+            for (Gen j = i + 1; j < ngens; ++j) {
                 res.emplace_back(i, j, get(i, j));
             }
         }
         return res;
     }
 
-    SubGroup Group::subgroup(const std::vector<int> &gens) const {
+    SubGroup Group::subgroup(const Gens &gens) const {
         return SubGroup(*this, gens);
     }
 
@@ -123,13 +123,13 @@ namespace tc {
         return g;
     }
 
-    Group Group::power(int p) const {
+    Group Group::power(Gen p) const {
         std::stringstream ss;
         ss << name << "^" << p;
 
         Group g(ngens * p, {}, ss.str());
         for (const auto &rel : rels()) {
-            for (int off = 0; off < g.ngens; off += ngens) {
+            for (Gen off = 0; off < g.ngens; off += ngens) {
                 g.set(rel.shift(off));
             }
         }
@@ -137,7 +137,7 @@ namespace tc {
         return g;
     }
 
-    SubGroup::SubGroup(const Group &parent, std::vector<int> gen_map)
+    SubGroup::SubGroup(const Group &parent, Gens gen_map)
         : Group(gen_map.size()), parent(parent) {
 
         std::sort(gen_map.begin(), gen_map.end());
@@ -145,7 +145,7 @@ namespace tc {
 
         for (size_t i = 0; i < gen_map.size(); ++i) {
             for (size_t j = 0; j < gen_map.size(); ++j) {
-                int mult = parent.get(gen_map[i], gen_map[j]);
+                Gen mult = parent.get(gen_map[i], gen_map[j]);
                 set(Rel(i, j, mult));
             }
         }
@@ -155,7 +155,7 @@ namespace tc {
         return g.product(h);
     }
 
-    Group operator^(const Group &g, int p) {
+    Group operator^(const Group &g, Gen p) {
         return g.power(p);
     }
 }

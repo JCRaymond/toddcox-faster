@@ -6,15 +6,18 @@
 #include <string>
 
 namespace tc {
+    using Gen = int;
+    using Gens = std::vector<Gen>;
+
     struct Action {
-        int from_idx = -1;
-        int gen = -1;
+        Gen from_idx = -1;
+        Gen gen = -1;
 
         Action() = default;
 
         Action(const Action &) = default;
 
-        Action(int from_idx, int gen);
+        Action(Gen from_idx, Gen gen);
     };
 
     struct Path {
@@ -26,9 +29,9 @@ namespace tc {
 
         void add_row();
 
-        [[nodiscard]] Action get(int to_idx) const;
+        [[nodiscard]] Action get(Gen to_idx) const;
 
-        void put(int from_idx, int gen, int to_idx);
+        void put(Gen from_idx, Gen gen, Gen to_idx);
       
         template<class C, class T, class E>
         void walk(
@@ -41,7 +44,7 @@ namespace tc {
             res.reserve(s);
             res.push_back(start);
 
-            for (int i = 1; i < s; ++i) {
+            for (Gen i = 1; i < s; ++i) {
                 auto &action = path[i];
                 auto &from = res.get(action.from_idx);
                 auto &val = gens[action.gen];
@@ -58,7 +61,7 @@ namespace tc {
             std::vector<T> res(size());
             res[0] = start;
 
-            for (int i = 1; i < res.size(); ++i) {
+            for (Gen i = 1; i < res.size(); ++i) {
                 auto &action = path[i];
                 auto &from = res[action.from_idx];
                 auto &val = gens[action.gen];
@@ -71,12 +74,12 @@ namespace tc {
         template<class T>
         [[nodiscard]] std::vector<T> walk(
             T start,
-            std::function<T(const T &, const int &)> op
+            std::function<T(const T &, const Gen &)> op
         ) const {
             std::vector<T> res(size());
             res[0] = start;
 
-            for (int i = 1; i < res.size(); ++i) {
+            for (Gen i = 1; i < res.size(); ++i) {
                 auto &action = path[i];
                 auto &from = res[action.from_idx];
                 auto &val = action.gen;
@@ -90,74 +93,74 @@ namespace tc {
     };
 
     struct Cosets {
-        int ngens;
-        std::vector<int> data;
+        Gen ngens;
+        Gens data;
         Path path;
 
         Cosets(const Cosets &) = default;
 
-        explicit Cosets(int ngens);
+        explicit Cosets(Gen ngens);
 
         void add_row();
 
-        void put(int coset, int gen, int target);
+        void put(Gen coset, Gen gen, Gen target);
 
-        void put(int idx, int target);
+        void put(Gen idx, Gen target);
 
-        [[nodiscard]] int get(int coset, int gen) const;
+        [[nodiscard]] Gen get(Gen coset, Gen gen) const;
 
-        [[nodiscard]] int get(int idx) const;
+        [[nodiscard]] Gen get(Gen idx) const;
 
         [[nodiscard]] size_t size() const;
     };
 
     struct Rel {
-        std::array<int, 2> gens;
-        int mult;
+        std::array<Gen, 2> gens;
+        Gen mult;
 
         Rel() = default;
 
         Rel(const Rel &) = default;
 
-        Rel(int a, int b, int m);
+        Rel(Gen a, Gen b, Gen m);
 
-        [[nodiscard]] Rel shift(int off) const;
+        [[nodiscard]] Rel shift(Gen off) const;
     };
 
     struct SubGroup;
 
     struct Group {
-        const int ngens;
-        std::vector<std::vector<int>> _mults;
+        const Gen ngens;
+        std::vector<Gens> _mults;
         std::string name;
 
         Group(const Group &) = default;
 
-        explicit Group(int ngens, const std::vector<Rel> &rels = {}, std::string name = "G");
+        explicit Group(Gen ngens, const std::vector<Rel> &rels = {}, std::string name = "G");
 
         void set(const Rel &r);
 
-        [[nodiscard]] int get(int a, int b) const;
+        [[nodiscard]] Gen get(Gen a, Gen b) const;
 
         [[nodiscard]] std::vector<Rel> rels() const;
 
-        [[nodiscard]] SubGroup subgroup(const std::vector<int> &gens) const;
+        [[nodiscard]] SubGroup subgroup(const Gens &gens) const;
 
         [[nodiscard]] Group product(const Group &other) const;
 
-        [[nodiscard]] Group power(int p) const;
+        [[nodiscard]] Group power(Gen p) const;
 
-        [[nodiscard]] Cosets solve(const std::vector<int> &sub_gens = {}) const;
+        [[nodiscard]] Cosets solve(const Gens &sub_gens = {}) const;
     };
 
     struct SubGroup : public Group {
-        std::vector<int> gen_map;
+        Gens gen_map;
         const Group &parent;
 
-        SubGroup(const Group &parent, std::vector<int> gen_map);
+        SubGroup(const Group &parent, Gens gen_map);
     };
 
     Group operator*(const Group &g, const Group &h);
 
-    Group operator^(const Group &g, int p);
+    Group operator^(const Group &g, Gen p);
 }
