@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <numeric>
 #include <functional>
 #include <vector>
 #include <string>
@@ -8,6 +9,8 @@
 namespace tc {
     using Gen = int;
     using Gens = std::vector<Gen>;
+
+    Gens iota(size_t size);
 
     struct Action {
         Gen from_idx = -1;

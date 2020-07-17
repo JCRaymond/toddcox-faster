@@ -5,6 +5,12 @@
 #include <algorithm>
 
 namespace tc {
+    Gens iota(size_t size) {
+        Gens res(size);
+        std::iota(res.begin(), res.end(), 0);
+        return res;
+    }
+
     Action::Action(Gen from_idx, Gen gen)
         : from_idx(from_idx), gen(gen) {
     }
