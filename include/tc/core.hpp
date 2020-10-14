@@ -55,14 +55,15 @@ namespace tc {
             std::vector<E> gens,
             std::function<T(const T &, const E &)> op
         ) const {
-            std::vector<T> res(size());
-            res[0] = start;
+            std::vector<T> res;
+            res.reserve(size());
+            res.push_back(start);
 
-            for (int i = 1; i < res.size(); ++i) {
+            for (int i = 1; i < size(); ++i) {
                 auto &action = path[i];
                 auto &from = res[action.from_idx];
                 auto &val = gens[action.gen];
-                res[i] = op(from, val);
+                res.push_back(op(from, val));
             }
 
             return res;
@@ -73,10 +74,11 @@ namespace tc {
             T start,
             std::function<T(const T &, const int &)> op
         ) const {
-            std::vector<T> res(size());
-            res[0] = start;
+            std::vector<T> res;
+            res.reserve(size());
+            res.push_back(start);
 
-            for (int i = 1; i < res.size(); ++i) {
+            for (int i = 1; i < size(); ++i) {
                 auto &action = path[i];
                 auto &from = res[action.from_idx];
                 auto &val = action.gen;
@@ -127,7 +129,7 @@ namespace tc {
     struct SubGroup;
 
     struct Group {
-        const int ngens;
+        int ngens;
         std::vector<std::vector<int>> _mults;
         std::string name;
 
